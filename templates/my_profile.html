@@ -1,0 +1,15 @@
+{% for value in data %}
+    Username: {{value[1]}}<br>----------<br>
+    Name: {{value[2]}}<br>----------<br>
+    Last Name: {{value[3]}}<br>----------<br>
+    Gmail: {{value[4]}}<br>----------<br>
+    Password: {{value[5]}}<br>----------<br>
+    Age: {{value[6]}}<br>----------<br>
+    Birthday: {{value[7]}}<br>----------<br>
+    Gender: {{value[8]}}<br>----------<br>
+    Adress: {{value[9]}}<br>----------<br>
+    Tel: {{value[10]}}<br>----------<br>
+    Mobile Phone: {{value[11]}}<br>----------<br>
+    <a href="/edit-profile/{{value[0]}}">Edit Profile</a><br>----------<br>
+    <a href="/delete-account/{{value[0]}}">Delete Account</a><br>----------<br>
+{% endfor %}

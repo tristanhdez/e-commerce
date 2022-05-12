@@ -1,4 +1,12 @@
-<img src="{{ url_for('static',filename='img/pacman-games.jpg') }}" alt=""
+{% for value in data %}
+    {{value[0]}}<br>----------<br>
+    {{value[1]}}<br>----------<br>
+    {{value[2]}}<br>----------<br>
+    {{value[3]}}<br>----------<br>
+    {{value[4]}}<br>----------<br>
+    <img src="{{ url_for('static', filename='img/{{ value[5] }}') }}" alt=""
 style="height: 200px; width: 200px;">
-Pac-Man Games
-<a href="/Add-to-Cart">Add to Cart</a>
+    {{value[5]}}<br>----------<br>
+    
+    <a href="/add-to-cart/{{value[0]}}">Add to Cart</a><br>----------<br>
+{% endfor %}

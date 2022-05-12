@@ -1,0 +1,37 @@
+{% extends './layout.html' %}
+{% block Body %}
+
+<form class="form-signin" action=" {{url_for('new_user')}} " method="POST">
+    <label for="username">Username</label>
+    <input type="text" class="form-control" id="username" name="username">
+    <br>
+    <label for="name">name</label>
+    <input type="text" class="form-control" id="name" name="name">
+    <br><label for="last_name">last_name</label>
+    <input type="text" class="form-control" id="last_name" name="last_name">
+    <br><label for="email">email</label>
+    <input type="text" class="form-control" id="email" name="email">
+
+    {% if msg %}
+        {{msg}}
+    {% endif %}
+    <br><label for="password">password</label>
+    <input type="password" class="form-control" id="password" name="password">
+    <br><label for="password">Type your password again</label>
+    <input type="password" class="form-control" id="password_verify" name="password_verify">
+    <br><label for="age">Age</label>
+    <input type="text" class="form-control" id="age" name="age">
+    
+    <br><br><label for="birthday">Gender</label><br>
+    <input type="text" class="form-control" id="id_gender" name="id_gender" placeholder="Male">
+    <br><br><label for="birthday">Birthday:</label><br>
+    <input type="text" class="form-control" id="birthday" name="birthday" placeholder="1996-05-15">
+    <br><label for="adress">adress</label>
+    <input type="text" class="form-control" id="adress" name="adress">
+    <br><label for="tel">tel</label>
+    <input type="text" class="form-control" id="tel" name="tel">
+    <br><label for="mobile_number">mobile_number</label>
+    <input type="text" class="form-control" id="mobile_number" name="mobile_number">
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>
+</form>
+    {% endblock %}

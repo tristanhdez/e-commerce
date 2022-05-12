@@ -10,18 +10,13 @@
 
 <h1> Bienvenido {{username}}</h1>
 <a href=" {{url_for('logout')}} "> Log Out </a>
+<a href=" {{url_for('my_cart')}} "> My Cart </a>
+<a href="{{url_for('my_profile')}}">My Profile</a>
 <br>
 <a href="{{url_for('electronic')}}">Electronic</a>
 <a href="{{url_for('item_pets')}}">Item Pets</a>
 <a href="{{url_for('womens_fashion')}}">Women's Fashion</a>
 <a href="{{url_for('mens_fashion')}}">Men's Fashion</a>
 <a href="{{url_for('videogames')}}">Video Games</a>
-
-{% for value in value %}
-
-    {{value[0]}}
-    {{value[1]}}
-
-{% endfor %}
 
 {% endblock %}
