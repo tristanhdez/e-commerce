@@ -15,6 +15,7 @@ mysql.init_app(app)
 connection = mysql.connect()
 cursor=connection.cursor()
 
+
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -24,19 +25,116 @@ def login_required(f):
            return "Incorrect"
     return wrap
 
+def master_login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in_master' in session and 'master_username' in session:
+            return f(*args, **kwargs)
+        else:
+           return "Incorrect"
+    return wrap
+
+
 @app.route('/index')
 @app.route('/')
 def index():
     return render_template("index.html")
+
 
 @app.route('/login')
 def login():
     return render_template("login.html")
 
 
+@app.route('/master-login')
+def master_login():
+    return render_template("master_login.html")
+
+
 @app.route('/signin')
 def signin():
     return render_template("signin.html")
+
+
+@login_required
+@app.route('/delete_from_my_cart/<int:id>/')
+def delete_from_my_cart(id):
+    sql = "DELETE FROM cart WHERE `cart`.`id` =%s";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql, id)
+    cursor.fetchall()
+    connection.commit()
+    msg = "Product Deleted"
+    return render_template("product_deleted_my_cart.html", msg=msg)
+
+
+
+@login_required
+@app.route('/buying_my_cart')
+def buying_my_cart():
+    return render_template("product.html")
+
+@master_login_required
+@app.route('/category_most_viewed')
+def category_most_viewed():
+    sql = "SELECT COUNT(*) FROM electronic_view;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    number_of_rows1 = cursor.fetchall()
+    connection.commit()
+
+    sql = "SELECT COUNT(*) FROM item_pets_view;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    number_of_rows2 = cursor.fetchall()
+    connection.commit()
+
+    sql = "SELECT COUNT(*) FROM mens_fashion_view;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    number_of_rows3 = cursor.fetchall()
+    connection.commit()
+
+    sql = "SELECT COUNT(*) FROM videogames_view;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    number_of_rows4 = cursor.fetchall()
+    connection.commit()
+
+    sql = "SELECT COUNT(*) FROM womens_fashion_view;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    number_of_rows5 = cursor.fetchall()
+    connection.commit()
+    return render_template("category_most_viewed.html", 
+    number_of_rows1=number_of_rows1,
+    number_of_rows2=number_of_rows2,
+    number_of_rows3=number_of_rows3,
+    number_of_rows4=number_of_rows4,
+    number_of_rows5=number_of_rows5
+    )
+
+@master_login_required
+@app.route('/product_most_viewed')
+def product_most_viewed():
+    return render_template("product_most_viewed.html")
+
+@master_login_required
+@app.route('/registered_users')
+def registered_users():
+    sql = "SELECT id, username, name, last_name, email, age, birthday, id_gender, address,tel,mobile_number FROM user;";
+    connection= mysql.connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    connection.commit()
+    return render_template("registered_users.html", data=data)
 
 @login_required
 @app.route('/my_profile')
@@ -255,6 +353,10 @@ def add_to_cart(id_product):
 def home():
     return render_template('home.html', username= session['username'])
 
+@login_required
+@app.route('/home-master')
+def home_master():
+    return render_template('home_master.html', master_username= session['master_username'])
 
 @app.route('/new-user',methods=['POST'])
 def new_user():
@@ -326,6 +428,47 @@ def verify():
     return render_template('login.html', msg=msg)
 
 
+
+@app.route('/verify_master',methods=['GET','POST'])
+def verify_master():
+    msg=''
+    if request.method=='POST':
+        username=request.form['username']
+        password=request.form['password']
+        connection = mysql.connect()
+        cursor=connection.cursor()
+        cursor.execute("SELECT `super_user`.`username` FROM `super_user` WHERE `super_user`.`username`='"+username+"'")
+        connection.commit()
+        data = cursor.fetchall()
+        result = " ".join(str(x) for x in data)
+        result = result.replace("(","").replace(")","").replace(","," ").replace(" ","").replace("'","")
+        print(result)
+        if result == username:
+            connection = mysql.connect()
+            cursor=connection.cursor()
+            cursor.execute("SELECT `super_user`.`password` FROM `super_user` WHERE `super_user`.`username`='"+username+"'")
+            connection.commit()
+            data = cursor.fetchall()
+            result2 = " ".join(str(x) for x in data)
+            result2 = result2.replace("(","").replace(")","").replace(","," ").replace(" ","").replace("'","")
+            print(result2)
+            if result2 == password:
+                session['logged_in_master']=True
+                session['master_username']=username
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(minutes=120)
+                return redirect(url_for('home_master'))
+            elif 'logged_in_master' in session:
+                logout()
+                session['logged_in_master']=True
+                session['master_username']=username
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(minutes=120)
+                return redirect(url_for('home_master'))
+    msg="Username or Password Incorrect. \nTry Again"
+    return render_template('master_login.html', msg=msg)
+
+
 @app.route('/logout')
 def logout():
     session.pop('leggedin',None)
@@ -334,6 +477,14 @@ def logout():
     session.permanent = False
     return redirect(url_for('login'))
 
+
+@app.route('/master_logout')
+def master_logout():
+    session.pop('logged_in_master',None)
+    session.pop('master_username',None)
+    session.clear()
+    session.permanent = False
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True) 

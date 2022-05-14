@@ -1,6 +1,25 @@
+<form action="buying-my-cart" method="post">
 {% for value in data %}
-    {{value[0]}}<br>----------<br>
-    {{value[1]}}<br>----------<br>
-    {{value[2]}}<br>----------<br>
-    {{value[3]}}<br>----------<br>
+    <table id="keywords" cellspacing="0" cellpadding="0">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Product</th>
+            <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{value[0]}}</td>
+                <td>{{value[1]}}</td>
+                <td>{{value[2]}}</td>
+                <td>{{value[3]}}</td>
+                <td><a href="/delete_from_my_cart/{{value[0]}}">Delete</a></td>
+            </tr>
+        </tbody>
+    </table>
 {% endfor %}
+<a href=" {{url_for('buying_my_cart')}} ">Buy Cart</a>
+</form>
+<a href=" {{url_for('home')}} ">Return Home</a>

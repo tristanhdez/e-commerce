@@ -1,0 +1,30 @@
+{% extends './layout.html' %}
+
+{% block Title %} Master Login {% endblock Title %}
+
+{% block CSS %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/login.css')}}">
+{% endblock %}
+
+{% block Body %}
+{% if msg %}
+    {{msg}}
+{% endif %}
+{% if msg_success %}
+    {{msg_success}}
+{% endif %}
+<form class="form-signin" action=" {{url_for('verify_master')}} " method="POST">
+    <h1 class="h3 mb-3 fw-normal">Please sign in Super User</h1>
+    <div class="form-floating">
+        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+        <label for="username">Username</label>
+    </div>
+    <div class="form-floating mt-2">
+        <input type="password" class="form-control" name="password" placeholder="Password">
+        <label for="password">Password</label>
+    </div>
+    <h1 class="h5 mb-3 fw-normal"><a href="{{url_for('signin')}}"> Sign In</a></h1>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Log In</button>
+</form>
+
+{% endblock %}
